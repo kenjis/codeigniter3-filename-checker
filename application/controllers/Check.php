@@ -18,9 +18,10 @@ class Check extends CI_Controller
 		parent::__construct();
 		
 		$this->dir = array(
-			APPPATH . 'controllers',
-			APPPATH . 'libraries',
-			APPPATH . 'models',
+			'controllers',
+			'libraries',
+			'models',
+			'core',
 		);
 	}
 
@@ -37,7 +38,7 @@ class Check extends CI_Controller
 	private function recursiveCheckFilename($dir)
 	{
 		$iterator = new RecursiveRegexIterator(
-			new RecursiveDirectoryIterator($dir),
+			new RecursiveDirectoryIterator(APPPATH . $dir),
 			'/\A.+\.php\z/i',
 			RecursiveRegexIterator::GET_MATCH
 		);
@@ -48,7 +49,7 @@ class Check extends CI_Controller
 				'/'.preg_quote(APPPATH, '/').'/', 'APPPATH/', $file[0]
 			);
 			
-			if (! $this->checkFilename($filename))
+			if (! $this->checkFilename($filename, $dir))
 			{
 				$this->output('Error: ' . $filename);
 			}
@@ -84,9 +85,27 @@ class Check extends CI_Controller
 		}
 	}
 
-	private function checkFilename($filepath)
+	private function checkFilename($filepath, $dir)
 	{
 		$filename = basename($filepath);
+		
+		if ($dir === 'libraries' || $dir === 'core')
+		{
+			$prefix = config_item('subclass_prefix');
+			
+			if ($this->hasPrefix($filename, $prefix))
+			{
+				$name = substr($filename, strlen($prefix));
+				
+				return $this->checkUcfirst($name);
+			}
+		}
+		
+		return $this->checkUcfirst($filename);
+	}
+
+	private function checkUcfirst($filename)
+	{
 		if (ucfirst($filename) !== $filename)
 		{
 			return FALSE;
@@ -95,5 +114,15 @@ class Check extends CI_Controller
 		{
 			return TRUE;
 		}
+	}
+
+	private function hasPrefix($filename, $prefix)
+	{
+		if (strncmp($prefix, $filename, strlen($prefix)) === 0)
+		{
+			return TRUE;
+		}
+		
+		return FALSE;
 	}
 }
