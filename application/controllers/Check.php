@@ -28,7 +28,10 @@ class Check extends CI_Controller
 
 	public function filename($fix = 'no')
 	{
-		$this->fix = $fix;
+		if ($fix === 'fix')
+		{
+			$this->fix = TRUE;
+		}
 		
 		foreach ($this->dir as $dir)
 		{
@@ -106,7 +109,7 @@ class Check extends CI_Controller
 		
 		if (! $this->checkUcfirst($filename))
 		{
-			if ($this->fix === 'fix')
+			if ($this->fix)
 			{
 				$newname = dirname($filepath).'/'.ucfirst($filename);
 				if (rename($filepath, $newname))
@@ -114,11 +117,11 @@ class Check extends CI_Controller
 					$this->output('Rename: ' . $filepath . PHP_EOL . '     -> ' . $newname);
 				}
 			}
-			return false;
+			return FALSE;
 		}
 		else
 		{
-			return true;
+			return TRUE;
 		}
 	}
 
