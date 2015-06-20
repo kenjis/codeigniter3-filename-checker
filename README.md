@@ -16,6 +16,12 @@ Or you can run via CLI:
 $ php index.php check filename
 ~~~
 
+If you want to fix filename:
+
+~~~
+$ php index.php check filename fix
+~~~
+
 ## Related Projects for CodeIgniter 3.0
 
 * [CodeIgniter Composer Installer](https://github.com/kenjis/codeigniter-composer-installer)

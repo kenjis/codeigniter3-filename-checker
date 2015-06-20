@@ -12,6 +12,7 @@ class Check extends CI_Controller
 {
 	private $dir;
 	private $output_ = array();
+	private $fix = FALSE;
 
 	public function __construct()
 	{
@@ -25,8 +26,10 @@ class Check extends CI_Controller
 		);
 	}
 
-	public function filename()
+	public function filename($fix = 'no')
 	{
+		$this->fix = $fix;
+		
 		foreach ($this->dir as $dir)
 		{
 			$this->recursiveCheckFilename($dir);
@@ -45,17 +48,19 @@ class Check extends CI_Controller
 
 		foreach(new RecursiveIteratorIterator($iterator) as $file)
 		{
-			$filename = preg_replace(
+			$filename = $file[0];
+			
+			$filename_show = preg_replace(
 				'/'.preg_quote(APPPATH, '/').'/', 'APPPATH/', $file[0]
 			);
 			
 			if (! $this->checkFilename($filename, $dir))
 			{
-				$this->output('Error: ' . $filename);
+				$this->output('Error: ' . $filename_show);
 			}
 			else
 			{
-				$this->output('Okay: ' . $filename);
+				$this->output('Okay: ' . $filename_show);
 			}
 		}
 	}
@@ -95,13 +100,26 @@ class Check extends CI_Controller
 			
 			if ($this->hasPrefix($filename, $prefix))
 			{
-				$name = substr($filename, strlen($prefix));
-				
-				return $this->checkUcfirst($name);
+				$filename = substr($filename, strlen($prefix));
 			}
 		}
 		
-		return $this->checkUcfirst($filename);
+		if (! $this->checkUcfirst($filename))
+		{
+			if ($this->fix === 'fix')
+			{
+				$newname = dirname($filepath).'/'.ucfirst($filename);
+				if (rename($filepath, $newname))
+				{
+					$this->output('Rename: ' . $filepath . PHP_EOL . '     -> ' . $newname);
+				}
+			}
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 
 	private function checkUcfirst($filename)
