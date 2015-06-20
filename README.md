@@ -1,6 +1,6 @@
 # CodeIgniter3 Filename Checker
 
-This package checks CodeIgniter 3.0 class filename.
+This controller checks CodeIgniter 3.0 class filename.
 
 > Starting with CodeIgniter 3.0, all class filenames (libraries, drivers, controllers and models) must be named in a Ucfirst-like manner or in other words - they must start with a capital letter.
 [CodeIgniter User Guide](http://www.codeigniter.com/user_guide/installation/upgrade_300.html#step-2-update-your-classes-file-names)
