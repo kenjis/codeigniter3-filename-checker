@@ -7,7 +7,7 @@ This package checks CodeIgniter 3.0 class filename.
 
 ## Installation
 
-Install `application/controller/Check.php` in your CodeIgniter 3.0 project.
+Install `controllers/Check.php` into your CodeIgniter 3.0 `application/controllers` folder.
 
 ## Usage
 
