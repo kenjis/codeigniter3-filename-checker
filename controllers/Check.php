@@ -26,7 +26,7 @@ class Check extends CI_Controller
 		);
 	}
 
-	public function filename($fix = 'no')
+	public function filename($fix = FALSE)
 	{
 		if ($fix === 'fix')
 		{
